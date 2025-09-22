@@ -6,9 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search, MapPin, Activity, Settings, Plus, Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+
 export default function Equipements() {
-  const equipmentData = [
-{ id: "15232", name: "PC postes de contrôle 100% P87", status: "ES", location: "UAP2", lastMaintenance: "2024-01-15", nextMaintenance: "2025-09-15" },
+const [equipmentData, setEquipmentData] = useState([{ id: "15232", name: "PC postes de contrôle 100% P87", status: "ES", location: "UAP2", lastMaintenance: "2024-01-15", nextMaintenance: "2025-09-15" },
             { id: "15243", name: "PC postes de contrôle 100% A20", status: "ES", location: "UAP2", lastMaintenance: "2024-01-10", nextMaintenance: "2025-09-10" },
             { id: "15499", name: "PC postes de contrôle 100% A40", status: "ES", location: "UAP1", lastMaintenance: "2024-01-20", nextMaintenance: "2025-09-20" },
             { id: "15561", name: "PC postes de contrôle 100% SDMO", status: "ES", location: "UAP2", lastMaintenance: "2024-01-18", nextMaintenance: "2025-09-18" },
@@ -865,7 +866,7 @@ export default function Equipements() {
             { id: "M-0340", name: "VISSEUSE ELECTRIQUE GX-220", status: "ES", location: "UAP1", lastMaintenance: "2024-04-27", nextMaintenance: "2025-10-23" },
             { id: "M-0341", name: "VISSEUSE ELECTRIQUE GX220", status: "ES", location: "UAP1", lastMaintenance: "2023-10-24", nextMaintenance: "2025-02-19" },
             { id: "M-0352", name: "VISSEUSE electrique", status: "ES", location: "UAP1", lastMaintenance: "2024-02-28", nextMaintenance: "2025-07-25" },
-            { id: "M0226", name: "VISSEUSE", status: "ES", location: "UAP1", lastMaintenance: "2023-12-15", nextMaintenance: "2025-05-11" },
+            { id: "M-0226", name: "VISSEUSE", status: "ES", location: "UAP1", lastMaintenance: "2023-12-15", nextMaintenance: "2025-05-11" },
 
              // P-Series Equipment
 
@@ -900,11 +901,39 @@ export default function Equipements() {
             { id: "S50G", name: "CASSETTE SUPERIEUR GAUCHE", status: "ES", location: "UAP2", lastMaintenance: "2024-02-28", nextMaintenance: "2025-07-25" },
             { id: "S81D", name: "CASSETTE SUPERIEUR DROITE", status: "ES", location: "UAP2", lastMaintenance: "2023-12-15", nextMaintenance: "2025-05-11" },
             { id: "S81G", name: "CASSETTE SUPERIEUR GAUCHE", status: "ES", location: "UAP2", lastMaintenance: "2024-03-22", nextMaintenance: "2025-09-17" }
-  ];
-
+  ]);
 const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [isOpen, setIsOpen] = useState(false);
+  const [newEquipment, setNewEquipment] = useState({
+    id: '',
+    name: '',
+    status: '',
+    location: '',
+    lastMaintenance: '',
+    nextMaintenance: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewEquipment(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    if (newEquipment.id && newEquipment.name && newEquipment.status && newEquipment.location && newEquipment.lastMaintenance && newEquipment.nextMaintenance) {
+      setEquipmentData(prev => [...prev, newEquipment]);
+      setIsOpen(false);
+      setNewEquipment({
+        id: '',
+        name: '',
+        status: '',
+        location: '',
+        lastMaintenance: '',
+        nextMaintenance: ''
+      });
+    }
+  };
 
   const filteredData = equipmentData.filter((item) => {
     const matchesSearch = item.id.toLowerCase().includes(searchTerm.toLowerCase()) || item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -913,7 +942,7 @@ const [searchTerm, setSearchTerm] = useState('');
     return matchesSearch && matchesLocation && matchesStatus;
   });
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case "ES": return "bg-success/10 text-success border-success/20";
       case "REBUS": return "bg-destructive/10 text-destructive border-destructive/20";
@@ -923,22 +952,86 @@ const [searchTerm, setSearchTerm] = useState('');
 
   return (
     <div className="min-h-screen bg-dashboard-content">
-      {/* Header */}
       <div className="bg-dashboard-header border-b p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Équipements</h1>
             <p className="text-muted-foreground">Gérez et surveillez tous vos équipements industriels</p>
           </div>
-          <Button className="w-fit">
-            <Plus className="h-4 w-4 mr-2" />
-            Ajouter Équipement
-          </Button>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button className="w-fit">
+                <Plus className="h-4 w-4 mr-2" />
+                Ajouter Équipement
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Ajouter un nouvel équipement</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <Input
+                  name="id"
+                  placeholder="ID"
+                  value={newEquipment.id}
+                  onChange={handleChange}
+                />
+                <Input
+                  name="name"
+                  placeholder="Nom"
+                  value={newEquipment.name}
+                  onChange={handleChange}
+                />
+                <Select onValueChange={(value) => setNewEquipment(prev => ({ ...prev, status: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Statut" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ES">ES</SelectItem>
+                    <SelectItem value="REBUS">REBUS</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select onValueChange={(value) => setNewEquipment(prev => ({ ...prev, location: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Zone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="UAP1">UAP1</SelectItem>
+                    <SelectItem value="UAP2">UAP2</SelectItem>
+                    <SelectItem value="MPC3">MPC3</SelectItem>
+                    <SelectItem value="LOG">LOG</SelectItem>
+                    <SelectItem value="ZZ">ZZ</SelectItem>
+                    <SelectItem value="MPF">MPF</SelectItem>
+                    <SelectItem value="LAB">LAB</SelectItem>
+                    <SelectItem value="FAB">FAB</SelectItem>
+                    <SelectItem value="MOL">MOL</SelectItem>
+                    <SelectItem value="PCO">PCO</SelectItem>
+                    <SelectItem value="IFS">IFS</SelectItem>
+                    <SelectItem value="CQL">CQL</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  name="lastMaintenance"
+                  placeholder="Dernière Maintenance (YYYY-MM-DD)"
+                  value={newEquipment.lastMaintenance}
+                  onChange={handleChange}
+                />
+                <Input
+                  name="nextMaintenance"
+                  placeholder="Prochaine Maintenance (YYYY-MM-DD)"
+                  value={newEquipment.nextMaintenance}
+                  onChange={handleChange}
+                />
+              </div>
+              <DialogFooter>
+                <Button onClick={handleSubmit}>Ajouter</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
       <div className="p-6 space-y-6">
-        {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -946,7 +1039,7 @@ const [searchTerm, setSearchTerm] = useState('');
               <Settings className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">922</div>
+              <div className="text-2xl font-bold">{equipmentData.length}</div>
               <p className="text-xs text-muted-foreground">
                 +8 ce mois
               </p>
@@ -959,9 +1052,9 @@ const [searchTerm, setSearchTerm] = useState('');
               <Activity className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">890</div>
+              <div className="text-2xl font-bold">{equipmentData.filter(e => e.status === "ES").length}</div>
               <p className="text-xs text-muted-foreground">
-                96,53% du total
+                {((equipmentData.filter(e => e.status === "ES").length / equipmentData.length) * 100).toFixed(2)}% du total
               </p>
             </CardContent>
           </Card>
@@ -972,17 +1065,14 @@ const [searchTerm, setSearchTerm] = useState('');
               <Settings className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">32</div>
+              <div className="text-2xl font-bold">{equipmentData.filter(e => e.status === "REBUS").length}</div>
               <p className="text-xs text-muted-foreground">
-                3.47% du total
+                {((equipmentData.filter(e => e.status === "REBUS").length / equipmentData.length) * 100).toFixed(2)}% du total
               </p>
             </CardContent>
           </Card>
-
-          
         </div>
 
-        {/* Filters */}
         <Card>
           <CardHeader>
             <CardTitle>Filtres et Recherche</CardTitle>
@@ -1026,7 +1116,6 @@ const [searchTerm, setSearchTerm] = useState('');
           </CardContent>
         </Card>
 
-        {/* Equipment Table */}
         <Card>
           <CardHeader>
             <CardTitle>Liste des Équipements</CardTitle>

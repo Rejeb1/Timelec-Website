@@ -3,35 +3,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { FileText, Download, TrendingUp, AlertTriangle, CheckCircle, Clock } from "lucide-react";
-import { saveAs } from "file-saver"; // Import file-saver
+import { saveAs } from "file-saver";
 
 export default function Reports() {
   const monthlyData = [
-    { month: "Jan", interventions: 45, preventive: 30, corrective: 15 },
-    { month: "Fév", interventions: 52, preventive: 32, corrective: 20 },
-    { month: "Mar", interventions: 38, preventive: 28, corrective: 10 },
-    { month: "Avr", interventions: 61, preventive: 38, corrective: 23 },
-    { month: "Mai", interventions: 44, preventive: 29, corrective: 15 },
-    { month: "Juin", interventions: 55, preventive: 35, corrective: 20 },
+    { month: "Mai", interventions: 605, preventive: 182, corrective: 424 },
+    { month: "Juin", interventions: 460, preventive: 138, corrective: 322 },
+    { month: "Juillet", interventions: 634, preventive: 189, corrective: 445 },
+    { month: "Aout", interventions: 150, preventive: 54, corrective: 106 },
   ];
 
   const statusData = [
-    { name: "Complétées", value: 156, color: "hsl(var(--success))" },
-    { name: "En cours", value: 23, color: "hsl(var(--primary))" },
-    { name: "Programmées", value: 45, color: "hsl(var(--warning))" },
-    { name: "En retard", value: 8, color: "hsl(var(--destructive))" },
+    { name: "Complétées", value: 1202, color: "hsl(var(--success))" },
+    { name: "Programmées", value: 462, color: "hsl(var(--warning))" },
+    { name: "En retard", value: 185, color: "hsl(var(--destructive))" },
   ];
 
   const equipmentData = [
-    { zone: "UAP1", operational: 219, maintenance: 106 },
-    { zone: "UAP2", operational: 307, maintenance: 44 },
-    { zone: "MOL", operational: 138, maintenance: 0 },
-    { zone: "IFS", operational: 63, maintenance: 0 },
-    { zone: "LOG", operational: 49, maintenance: 0 },
+    { zone: "UAP1", operational: 219, maintenance: 895 },
+    { zone: "UAP2", operational: 307, maintenance: 909 },
+    { zone: "MOL", operational: 138, maintenance: 13 },
+    { zone: "IFS", operational: 63, maintenance: 2 },
+    { zone: "LOG", operational: 49, maintenance: 2 },
     { zone: "PCO", operational: 31, maintenance: 0 },
     { zone: "LAB", operational: 12, maintenance: 0 },
     { zone: "ZZ", operational: 17, maintenance: 0 },
-    { zone: "FAB", operational: 63, maintenance: 0 },
+    { zone: "FAB", operational: 63, maintenance: 28 },
     { zone: "MPC3", operational: 3, maintenance: 0 },
   ];
 
@@ -45,22 +42,18 @@ export default function Reports() {
     { date: "07/02", completion: 94, efficiency: 86 },
   ];
 
-  // Function to convert data to TXT format
   const convertToTXT = (data, title) => {
     if (!data || data.length === 0) return "";
-    const headers = Object.keys(data[0]).join("\t"); // Use tabs for separation
+    const headers = Object.keys(data[0]).join("\t");
     const rows = data.map((row) => Object.values(row).join("\t")).join("\n");
     return `${title}\n${headers}\n${rows}\n\n`;
   };
 
-  // Function to handle export button click
   const handleExport = () => {
     const txtContent =
       convertToTXT(monthlyData, "Monthly Interventions") +
       convertToTXT(statusData, "Status Distribution") +
-      convertToTXT(equipmentData, "Equipment by Zone") +
-      convertToTXT(performanceData, "Performance Trends");
-
+      convertToTXT(equipmentData, "Equipment by Zone") ;
     const blob = new Blob([txtContent], { type: "text/plain;charset=utf-8;" });
     saveAs(blob, "maintenance_reports.txt");
   };
@@ -75,7 +68,6 @@ export default function Reports() {
             <p className="text-muted-foreground">Analyses et statistiques détaillées des opérations de maintenance</p>
           </div>
           <div className="flex gap-2">
-            
             <Button onClick={handleExport}>
               <Download className="h-4 w-4 mr-2" />
               Exporter
@@ -94,9 +86,6 @@ export default function Reports() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">94.2%</div>
-              <p className="text-xs text-muted-foreground">
-                +2.1% vs mois dernier
-              </p>
             </CardContent>
           </Card>
 
@@ -106,25 +95,11 @@ export default function Reports() {
               <Clock className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">2.4h</div>
-              <p className="text-xs text-muted-foreground">
-                -0.3h vs mois dernier
-              </p>
+              <div className="text-2xl font-bold">0.3h</div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Disponibilité</CardTitle>
-              <TrendingUp className="h-4 w-4 text-success" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">98.7%</div>
-              <p className="text-xs text-muted-foreground">
-                +1.2% vs mois dernier
-              </p>
-            </CardContent>
-          </Card>
+          
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -133,9 +108,6 @@ export default function Reports() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">8</div>
-              <p className="text-xs text-muted-foreground">
-                -3 vs mois dernier
-              </p>
             </CardContent>
           </Card>
         </div>
@@ -145,9 +117,7 @@ export default function Reports() {
           <Card>
             <CardHeader>
               <CardTitle>Interventions Mensuelles</CardTitle>
-              <CardDescription>
-                Évolution des maintenances préventives et correctives
-              </CardDescription>
+              <CardDescription>Évolution des maintenances préventives et correctives</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -169,9 +139,7 @@ export default function Reports() {
           <Card>
             <CardHeader>
               <CardTitle>Répartition des Statuts</CardTitle>
-              <CardDescription>
-                État actuel de toutes les interventions
-              </CardDescription>
+              <CardDescription>État actuel de toutes les interventions</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -197,14 +165,14 @@ export default function Reports() {
               </div>
             </CardContent>
           </Card>
+        </div>
 
-          {/* Equipment by Zone */}
-          <Card>
+        {/* Centered Equipment by Zone */}
+        <div className="flex justify-center">
+          <Card className="w-full lg:w-1/2">
             <CardHeader>
               <CardTitle>État des Équipements par Zone</CardTitle>
-              <CardDescription>
-                Répartition du statut des équipements
-              </CardDescription>
+              <CardDescription>Répartition du statut des équipements</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -214,53 +182,14 @@ export default function Reports() {
                     <XAxis dataKey="zone" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="operational" fill="hsl(var(--success))" name="Opérationnel" />
+                    <Bar dataKey="operational" fill="hsl(var(--success))" name="Nombre des équipements" />
                     <Bar dataKey="maintenance" fill="hsl(var(--warning))" name="Maintenance" />
-                    <Bar dataKey="critical" fill="hsl(var(--destructive))" name="Critique" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
-
-          {/* Performance Trends */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Tendances de Performance</CardTitle>
-              <CardDescription>
-                Évolution du taux de completion et de l'efficacité
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="completion" 
-                      stroke="hsl(var(--primary))" 
-                      name="Completion %" 
-                      strokeWidth={2}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="efficiency" 
-                      stroke="hsl(var(--accent))" 
-                      name="Efficacité %" 
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
         </div>
-
-        
       </div>
     </div>
   );

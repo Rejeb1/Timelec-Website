@@ -11,7 +11,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   const navigationItems = [
-    { title: "5M Dashboard", description: "Analyse des pannes selon la méthode 5M", icon: BarChart3, path: "/dashboard", color: "primary" },
+    { title: "Dashboard", description: "Analyse des pannes selon la méthode 5M", icon: BarChart3, path: "/dashboard", color: "primary" },
     { title: "Équipements", description: "Gérez et surveillez tous vos équipements", icon: Settings, path: "/equipements", color: "accent" },
     { title: "Maintenance", description: "Planifiez et suivez les interventions", icon: Wrench, path: "/maintenance", color: "method" },
     { title: "Planning", description: "Organisez le planning des interventions", icon: Calendar, path: "/schedule", color: "milieu" },

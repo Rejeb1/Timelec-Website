@@ -11,7 +11,7 @@ import Schedule from "./pages/Schedule";
 import Technicians from "./pages/Technicians";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
-
+import './firebase'; // This initializes Firebase
 const queryClient = new QueryClient();
 
 const App = () => (
